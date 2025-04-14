@@ -1,4 +1,5 @@
 import torch
+import sys
 import torch.optim as optim
 import torchvision
 import torchvision.transforms as T
@@ -10,8 +11,8 @@ from model import MiniXception
 from utils import FocalLoss, SubsetWithTransform
 
 # Cesty a hyperparametre
-TRAIN_PATH = '/content/dataset/train'
-MODEL_PATH = 'best_model.pt'
+TRAIN_PATH = '../data/train'
+MODEL_PATH = sys.argv[1] if len(sys.argv) > 1 else  '../results/new_model.pt'
 LEARNING_RATE = 1e-3
 W_DECAY = 1e-4
 BATCH_SIZE = 32
@@ -124,9 +125,9 @@ def train_model(model, train_loader, val_loader, criterion, optimizer, scheduler
                 print(f"Early stopping na epoche {epoch + 1}")
                 break
 
-        print(f"Epcha {epoch + 1}/{epochs} | Train loss: {train_loss:.4f} | Val loss: {val_loss:.4f} | Val acc: {val_acc:.2f}%")
+        print(f"Epocha {epoch + 1}/{epochs} | Train loss: {train_loss:.4f} | Val loss: {val_loss:.4f} | Val acc: {val_acc:.2f}%")
 
-    print(f"Koniec tréningu. Najlepšia val acc: {best_val_acc:.2f}%")
+    print(f"End of training. Best val acc: {best_val_acc:.2f}%")
 
 if __name__ == "__main__":
     model = MiniXception(num_classes=num_classes).to(device)

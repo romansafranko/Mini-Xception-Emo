@@ -1,3 +1,4 @@
+import sys
 import torch
 import torch.nn.functional as F
 import torchvision
@@ -6,8 +7,8 @@ from torch.utils.data import DataLoader
 from torch.cuda.amp import autocast
 from model import MiniXception
 
-TEST_PATH = '/content/dataset/test'
-MODEL_PATH = 'best_model.pt'
+TEST_PATH = '../data/test'
+MODEL_PATH = sys.argv[1] if len(sys.argv) > 1 else  '../results/best_model.pt'
 
 # Transformácie a dataset
 test_transform = T.Compose([
@@ -70,7 +71,8 @@ def evaluate_no_tta(model, loader, device):
 if __name__ == "__main__":
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     best_model = MiniXception(num_classes=7).to(device)
-    best_model.load_state_dict(torch.load(MODEL_PATH))
+    best_model.load_state_dict(torch.load(MODEL_PATH, map_location=device))
+    best_model.to(device)
     best_model.eval()
     acc_no_tta = evaluate_no_tta(best_model, test_loader, device)
     acc_tta = evaluate_tta(best_model, test_loader, device, n_augment=3)

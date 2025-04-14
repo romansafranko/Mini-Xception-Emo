@@ -1,13 +1,19 @@
+import sys
 import cv2
 import torch
 import torchvision.transforms as T
 from PyQt5 import QtWidgets, QtGui, QtCore
 from model import MiniXception
 
+default_model_path = '../results/best_model.pt'
+
+model_path = sys.argv[1] if len(sys.argv) > 1 else default_model_path
+
 # Načítanie modelu
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 model = MiniXception(num_classes=7).to(device)
-model.load_state_dict(torch.load('best_model.pt'))
+model.load_state_dict(torch.load(model_path, map_location=device))
+model.to(device)
 model.eval()
 
 # Transformácie pre vstup
