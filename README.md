@@ -80,7 +80,7 @@ No argument? The application again loads **`results/best_model.pt`** by default 
 
 ## Results
 
-On FER‑2013 the model reached **XX %** top‑1 accuracy (without TTA) and **YY %** (with TTA).  
+On FER‑2013 the model reached **69.0 7%** top‑1 accuracy (without TTA) and **69.20 %** (with TTA).  
 See `results/README.md` for full logs, confusion matrices, and training curves.
 
 ---
