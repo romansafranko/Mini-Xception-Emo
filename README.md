@@ -26,7 +26,9 @@ A **lightweight convolutional network for real‑time facial‑expression recogn
 │  ├─ model.py
 │  ├─ train.py
 │  └─ utils.py
-├─ data/              # expected `train/` & `test/` folders (e.g. FER‑2013)
+├─ data/
+│  ├─ train/
+│  └─ test/
 ├─ results/
 │  ├─ best_model.pt   # auto‑generated
 │  └─ README.md       # experiment logs
