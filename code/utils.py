@@ -1,7 +1,5 @@
 """
-Utility classes:
-* FocalLoss        – tackles class imbalance by down‑weighting easy samples
-* SubsetWithTransform – attach a transform to a torch.utils.data.Subset
+Utility classes: FocalLoss and dataset‑wrapper with on‑the‑fly transform.
 """
 
 import torch
@@ -11,51 +9,52 @@ from torch.utils.data import Dataset
 
 
 class FocalLoss(nn.Module):
-    r"""
-    Focal loss (Lin et al., 2017).
-
-    FL(p_t) = -α · (1 − p_t)^γ · log(p_t)
-
-    Parameters
-    ----------
-    alpha : float
-        Balancing factor between classes.
-    gamma : float
-        Focusing parameter to reduce the loss contribution from easy samples.
-    reduction : {"mean", "sum", "none"}
     """
+    Focal Loss (Lin et al. 2017) for handling class imbalance.
 
-    def __init__(self, alpha: float = 1.0, gamma: float = 2.0, reduction: str = "mean"):
+    Args
+    ----
+    alpha : balancing factor between positive/negative examples
+    gamma : focusing parameter (γ = 2 is common)
+    reduction : 'mean', 'sum' or 'none'
+    """
+    def __init__(self, alpha=1.0, gamma=2.0, reduction='mean'):
         super().__init__()
-        self.alpha = alpha
-        self.gamma = gamma
-        self.reduction = reduction
+        self.alpha      = alpha
+        self.gamma      = gamma
+        self.reduction  = reduction
 
     def forward(self, inputs, targets):
-        ce_loss = F.cross_entropy(inputs, targets, reduction="none")
-        pt = torch.exp(-ce_loss)
-        loss = self.alpha * (1 - pt) ** self.gamma * ce_loss
+        """
+        inputs  — un‑normalized logits, shape [N, C]
+        targets — ground‑truth class indices, shape [N]
+        """
+        ce_loss  = F.cross_entropy(inputs, targets, reduction='none')
+        pt       = torch.exp(-ce_loss)           # probability of the true class
+        focal    = self.alpha * (1 - pt) ** self.gamma * ce_loss
 
-        if self.reduction == "mean":
-            return loss.mean()
-        elif self.reduction == "sum":
-            return loss.sum()
-        else:
-            return loss
+        if self.reduction == 'mean':
+            return torch.mean(focal)
+        if self.reduction == 'sum':
+            return torch.sum(focal)
+        return focal                             # 'none'
 
 
 class SubsetWithTransform(Dataset):
     """
-    A thin wrapper that lets you retrofit a *transform* onto a Subset object.
-    """
+    Wrap a torch.utils.data.Subset and lazily apply a transform.
 
+    Useful because torchvision’s ImageFolder returns PIL images; we
+    want different transforms for train/val but keep a single subset
+    object produced by **random_split**.
+    """
     def __init__(self, subset, transform=None):
-        self.subset = subset
+        self.subset   = subset
         self.transform = transform
 
     def __getitem__(self, idx):
-        x, y = self.subset[idx]
-        if self.transform is not None:
+        x, y = self.subset[idx]          # original (image, label)
+        if self.transform:
             x = self.transform(x)
         return x, y
 
