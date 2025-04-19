@@ -95,4 +95,7 @@ MIT license – see `LICENSE`.
 
 ## Reference
 
-*O. Arriaga, M. Valdenegro‑Toro, P. Plöger. “Real‑time Convolutional Neural Networks for Emotion and Gender Classification”, arXiv:1710.07557 (2017).*
+## References
+
+C. Li, D. Li, M. Zhao, and H. Li, "A Light-Weight Convolutional Neural Network for Facial Expression Recognition using Mini-Xception Neural Networks," in *Proc. 2022 IEEE 22nd Int. Conf. on Software Quality, Reliability, and Security Companion (QRS-C)*, 2022, pp. 567–570. [Online]. Available: https://ieeexplore.ieee.org/document/10077050
+
