@@ -81,6 +81,8 @@ Load it in PyTorch with:
 
 ```python
 import torch
-model.load_state_dict(torch.load("results/best_model.pt", map_location="cpu"))
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+model = MiniXception(num_classes=7).to(device)
+model.load_state_dict(torch.load("results/best_model.pt", map_location=device))
 model.eval()
 ```
