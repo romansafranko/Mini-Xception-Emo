@@ -40,10 +40,6 @@ A **lightweight convolutional network for real‑time facial‑expression recogn
 ```bash
 git clone https://github.com/romansafranko/Mini-Xception-Emo.git
 cd Mini-Xception-Emo
-
-python -m venv .venv
-source .venv/bin/activate      # Windows: .venv\Scripts\activate
-
 pip install -r requirements.txt
 ```
 
